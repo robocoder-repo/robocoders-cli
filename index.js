@@ -1,11 +1,17 @@
 
 require('dotenv').config();
 const axios = require('axios');
+const readline = require('readline');
 
 const API_BASE_URL = 'https://api.robocoders.ai';
 const ACCESS_TOKEN = process.env.ACCESS_TOKEN;
 
 let sessionId = null;
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
 
 async function createSession() {
   try {
@@ -29,32 +35,33 @@ async function chat(prompt, agent) {
     }, {
       headers: { 'Authorization': `Bearer ${ACCESS_TOKEN}` }
     });
-    console.log('Full Agent response:', JSON.stringify(response.data, null, 2));
+    console.log('Agent response:', response.data.message);
     return response.data;
   } catch (error) {
     console.error('Error in chat:', error.message);
   }
 }
 
+function promptUser(agent) {
+  rl.question('Enter your prompt (or "exit" to quit): ', async (prompt) => {
+    if (prompt.toLowerCase() === 'exit') {
+      rl.close();
+      return;
+    }
+    
+    await chat(prompt, agent);
+    promptUser(agent);
+  });
+}
+
 async function main() {
   await createSession();
   console.log('Welcome to the Robocoders.ai CLI!');
   
-  const agent = 'GeneralCodingAgent';
-  console.log(`Selected agent: ${agent}`);
-  
-  const prompts = [
-    "Write a simple 'Hello, World!' program in Python.",
-    "Now, modify the program to accept a name as input and greet the user.",
-    "Can you explain how to run this Python script from the command line?"
-  ];
-  
-  for (const prompt of prompts) {
-    console.log(`\nSending prompt: "${prompt}"`);
-    await chat(prompt, agent);
-  }
-  
-  console.log('\nTest completed. Exiting.');
+  rl.question('Choose an agent (GeneralCodingAgent, RepoAgent, FrontEndAgent): ', (agent) => {
+    console.log(`You've selected ${agent}. You can start chatting now.`);
+    promptUser(agent);
+  });
 }
 
 main();
