@@ -29,7 +29,9 @@ Follow these steps to set up and run the Robocoders CLI application:
    ```
 
 5. **Interact with the CLI:**
-   The application will prompt you to choose an agent (GeneralCodingAgent, RepoAgent, or FrontEndAgent) and then allow you to send prompts to the selected agent.
+   - The application will prompt you to choose an agent (GeneralCodingAgent, RepoAgent, or FrontEndAgent).
+   - After selecting an agent, you can start entering your prompts.
+   - Type 'exit' to quit the application.
 
 ## About the Author
 
