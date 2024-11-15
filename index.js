@@ -35,10 +35,19 @@ async function chat(prompt, agent) {
     }, {
       headers: { 'Authorization': `Bearer ${ACCESS_TOKEN}` }
     });
-    console.log('Agent response:', response.data.message);
+    
+    if (response.data && response.data.message) {
+      console.log('Agent response:', response.data.message);
+    } else {
+      console.log('Full response:', JSON.stringify(response.data, null, 2));
+    }
+    
     return response.data;
   } catch (error) {
     console.error('Error in chat:', error.message);
+    if (error.response) {
+      console.error('Error response:', error.response.data);
+    }
   }
 }
 
